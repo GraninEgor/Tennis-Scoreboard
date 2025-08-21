@@ -1,6 +1,6 @@
 package com.example.tennisscoreboard;
 
-import com.example.tennisscoreboard.entity.Player;
+import com.example.tennisscoreboard.model.entity.Player;
 import com.example.tennisscoreboard.util.HibernateUtil;
 import lombok.Cleanup;
 

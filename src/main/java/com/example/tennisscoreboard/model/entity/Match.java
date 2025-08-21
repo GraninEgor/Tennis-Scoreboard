@@ -1,4 +1,4 @@
-package com.example.tennisscoreboard.entity;
+package com.example.tennisscoreboard.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
