@@ -39,10 +39,10 @@ public class NewMatchServlet extends HttpServlet {
 
         Player firstPlayer = new Player(firstPlayerName);
         Player secondPlayer = new Player(secondPlayerName);
-
+        session.beginTransaction();
         playerService.createPlayer(firstPlayer);
         playerService.createPlayer(secondPlayer);
-
+        session.getTransaction().commit();
         UUID uuid = ongoingMatchService.createMatch(firstPlayer, secondPlayer);
         resp.sendRedirect("/match-score?uuid=%s".formatted(uuid));
     }

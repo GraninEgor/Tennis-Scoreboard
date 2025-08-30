@@ -58,18 +58,27 @@ public class CurrentMatchServlet extends HttpServlet {
         if(currentMatch.get().isEnded()){
             @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
             @Cleanup var session = sessionFactory.openSession();
+
             MatchRepository matchRepository = new MatchRepository(session, Match.class);
             EndedMatchService endedMatchService = new EndedMatchService(matchRepository);
             PlayerRepository playerRepository = new PlayerRepository(session, Player.class);
             PlayerService playerService = new PlayerService(playerRepository);
             GameAndEntityMapper gameAndEntityMapper = new GameAndEntityMapper(playerService);
+
+            session.beginTransaction();
+
             endedMatchService.create(gameAndEntityMapper.toEntity(currentMatch.get()));
+
+            session.getTransaction().commit();
+
             req.setAttribute("firstPlayerName",currentMatch.get().getFirstPlayer().getName());
             req.setAttribute("secondPlayerName",currentMatch.get().getSecondPlayer().getName());
             req.setAttribute("firstPlayerScore",currentMatch.get().getFirstPlayerScore());
             req.setAttribute("secondPlayerScore",currentMatch.get().getSecondPlayerScore());
             req.setAttribute("winnerName", currentMatch.get().getWinner().getName());
+
             ongoingMatchService.getMatches().remove(uuid);
+
             req.getRequestDispatcher("/WEB-INF/jsp/ended-match.jsp").forward(req, resp);
         }
         else{
@@ -83,6 +92,7 @@ public class CurrentMatchServlet extends HttpServlet {
             req.setAttribute("secondPlayerName",currentMatch.get().getSecondPlayer().getName());
             req.setAttribute("firstPlayerScore",currentMatch.get().getFirstPlayerScore());
             req.setAttribute("secondPlayerScore",currentMatch.get().getSecondPlayerScore());
+
             req.getRequestDispatcher("/WEB-INF/jsp/match-score.jsp").forward(req, resp);
         }
     }
