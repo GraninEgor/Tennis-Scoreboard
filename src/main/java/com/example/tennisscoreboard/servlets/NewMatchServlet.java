@@ -27,7 +27,7 @@ public class NewMatchServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        var sessionFactory = HibernateUtil.getSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
 
         PlayerRepository playerRepository = new PlayerRepository(session, Player.class);
@@ -39,9 +39,15 @@ public class NewMatchServlet extends HttpServlet {
 
         Player firstPlayer = new Player(firstPlayerName);
         Player secondPlayer = new Player(secondPlayerName);
+
+
         session.beginTransaction();
+
         playerService.createPlayer(firstPlayer);
         playerService.createPlayer(secondPlayer);
+
+        session.flush();
+
         session.getTransaction().commit();
         UUID uuid = ongoingMatchService.createMatch(firstPlayer, secondPlayer);
         resp.sendRedirect("/match-score?uuid=%s".formatted(uuid));

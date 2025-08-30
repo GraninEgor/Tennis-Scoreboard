@@ -19,12 +19,14 @@ public class EndedMatchesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        var sessionFactory = HibernateUtil.getSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
+
         MatchRepository matchRepository = new MatchRepository(session, Match.class);
         EndedMatchService endedMatchService = new EndedMatchService(matchRepository);
+
         List<Match> matches = endedMatchService.findAll();
-        System.out.println(matches);
+
         req.setAttribute("matches", matches);
         req.getRequestDispatcher("/WEB-INF/jsp/ended-matches.jsp").forward(req,resp);
     }

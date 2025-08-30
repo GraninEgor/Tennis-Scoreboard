@@ -56,7 +56,7 @@ public class CurrentMatchServlet extends HttpServlet {
         UUID uuid = UUID.fromString(req.getParameter("uuid"));
         Optional<CurrentMatch> currentMatch = ongoingMatchService.getMatches().get(uuid);
         if(currentMatch.get().isEnded()){
-            @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+            var sessionFactory = HibernateUtil.getSessionFactory();
             @Cleanup var session = sessionFactory.openSession();
 
             MatchRepository matchRepository = new MatchRepository(session, Match.class);
@@ -66,6 +66,8 @@ public class CurrentMatchServlet extends HttpServlet {
             GameAndEntityMapper gameAndEntityMapper = new GameAndEntityMapper(playerService);
 
             session.beginTransaction();
+
+            System.out.println(playerService.get(currentMatch.get().getFirstPlayer().getId()));
 
             endedMatchService.create(gameAndEntityMapper.toEntity(currentMatch.get()));
 

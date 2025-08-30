@@ -6,7 +6,7 @@ import lombok.Cleanup;
 
 public class HibernateRunner {
     public static void main(String[] args) {
-        @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
