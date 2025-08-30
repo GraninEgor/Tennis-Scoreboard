@@ -35,6 +35,13 @@ public class CurrentMatchServlet extends HttpServlet {
             req.setAttribute("secondPlayerName", map.getSecondPlayer().getName());
             req.setAttribute("firstPlayerScore", map.getFirstPlayerScore());
             req.setAttribute("secondPlayerScore", map.getSecondPlayerScore());
+            try {
+                req.getRequestDispatcher("/WEB-INF/jsp/match-score.jsp").forward(req, resp);
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }, () -> {
             try {
                 resp.sendRedirect("404");
@@ -42,14 +49,13 @@ public class CurrentMatchServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         });
-        req.getRequestDispatcher("/WEB-INF/jsp/match-score.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID uuid = UUID.fromString(req.getParameter("uuid"));
         Optional<CurrentMatch> currentMatch = ongoingMatchService.getMatches().get(uuid);
-        if(currentMatch.isEnded()){
+        if(currentMatch.get().isEnded()){
             @Cleanup var sessionFactory = HibernateUtil.buildSessionFactory();
             @Cleanup var session = sessionFactory.openSession();
             MatchRepository matchRepository = new MatchRepository(session, Match.class);
@@ -57,26 +63,26 @@ public class CurrentMatchServlet extends HttpServlet {
             PlayerRepository playerRepository = new PlayerRepository(session, Player.class);
             PlayerService playerService = new PlayerService(playerRepository);
             GameAndEntityMapper gameAndEntityMapper = new GameAndEntityMapper(playerService);
-            endedMatchService.create(gameAndEntityMapper.toEntity(currentMatch));
-            req.setAttribute("firstPlayerName",currentMatch.getFirstPlayer().getName());
-            req.setAttribute("secondPlayerName",currentMatch.getSecondPlayer().getName());
-            req.setAttribute("firstPlayerScore",currentMatch.getFirstPlayerScore());
-            req.setAttribute("secondPlayerScore",currentMatch.getSecondPlayerScore());
-            req.setAttribute("winnerName", currentMatch.getWinner().getName());
+            endedMatchService.create(gameAndEntityMapper.toEntity(currentMatch.get()));
+            req.setAttribute("firstPlayerName",currentMatch.get().getFirstPlayer().getName());
+            req.setAttribute("secondPlayerName",currentMatch.get().getSecondPlayer().getName());
+            req.setAttribute("firstPlayerScore",currentMatch.get().getFirstPlayerScore());
+            req.setAttribute("secondPlayerScore",currentMatch.get().getSecondPlayerScore());
+            req.setAttribute("winnerName", currentMatch.get().getWinner().getName());
             ongoingMatchService.getMatches().remove(uuid);
             req.getRequestDispatcher("/WEB-INF/jsp/ended-match.jsp").forward(req, resp);
         }
         else{
             if(req.getParameter("action").equals("firstPlayerGotPoint")){
-                currentMatch.setFirstPlayerScore(currentMatch.getFirstPlayerScore() + 1);
+                currentMatch.get().setFirstPlayerScore(currentMatch.get().getFirstPlayerScore() + 1);
             }
             else if(req.getParameter("action").equals("secondPlayerGotPoint")){
-                currentMatch.setSecondPlayerScore(currentMatch.getSecondPlayerScore() + 1);
+                currentMatch.get().setSecondPlayerScore(currentMatch.get().getSecondPlayerScore() + 1);
             }
-            req.setAttribute("firstPlayerName",currentMatch.getFirstPlayer().getName());
-            req.setAttribute("secondPlayerName",currentMatch.getSecondPlayer().getName());
-            req.setAttribute("firstPlayerScore",currentMatch.getFirstPlayerScore());
-            req.setAttribute("secondPlayerScore",currentMatch.getSecondPlayerScore());
+            req.setAttribute("firstPlayerName",currentMatch.get().getFirstPlayer().getName());
+            req.setAttribute("secondPlayerName",currentMatch.get().getSecondPlayer().getName());
+            req.setAttribute("firstPlayerScore",currentMatch.get().getFirstPlayerScore());
+            req.setAttribute("secondPlayerScore",currentMatch.get().getSecondPlayerScore());
             req.getRequestDispatcher("/WEB-INF/jsp/match-score.jsp").forward(req, resp);
         }
     }
