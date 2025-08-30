@@ -1,16 +1,27 @@
 package com.example.tennisscoreboard.model.game;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.tennisscoreboard.model.entity.Player;
+import lombok.*;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@RequiredArgsConstructor()
 public class CurrentMatch {
-    private Long firstPlayerId;
-    private Long secondPlayerId;
-    private int score;
+    private final Player firstPlayer;
+    private final Player secondPlayer;
+    private int firstPlayerScore = 0;
+    private int secondPlayerScore = 0;
+
+    public boolean isEnded() {
+        if(firstPlayerScore == 6){
+            winner = firstPlayer;
+            return true;
+        }
+        if(secondPlayerScore == 6){
+            winner = secondPlayer;
+            return true;
+        }
+        return false;
+    }
+
+    private Player winner;
 }

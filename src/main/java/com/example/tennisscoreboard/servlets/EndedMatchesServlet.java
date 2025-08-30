@@ -1,4 +1,4 @@
 package com.example.tennisscoreboard.servlets;
 
-public class MatchScoreServlet {
+public class EndedMatchesServlet {
 }
