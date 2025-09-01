@@ -9,7 +9,6 @@ import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 
 public class HibernateTest {
-    @Test
     void saveTest(){
         var sessionFactory = HibernateUtil.getSessionFactory();
         @Cleanup var session = sessionFactory.openSession();
@@ -55,6 +54,23 @@ public class HibernateTest {
         session2.getTransaction().commit();
 
         System.out.println(endedMatchService2.findAll());
+    }
 
+    @Test
+    void amoutTest(){
+        var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session5 = sessionFactory.openSession();
+
+        saveTest();
+
+        session5.beginTransaction();
+        MatchRepository matchRepository3 = new MatchRepository(session5, Match.class);
+        EndedMatchService endedMatchService3 = new EndedMatchService(matchRepository3);
+        PlayerRepository playerRepository3= new PlayerRepository(session5,Player.class);
+        PlayerService playerService3 = new PlayerService(playerRepository3);
+
+        System.out.println(endedMatchService3.findAmountOfMatches());
+
+        session5.getTransaction().commit();
     }
 }

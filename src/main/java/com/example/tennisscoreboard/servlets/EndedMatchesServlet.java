@@ -29,7 +29,7 @@ public class EndedMatchesServlet extends HttpServlet {
             page =  0;
         }
         else{
-            page = Integer.parseInt(pageParam);
+            page = Integer.parseInt(pageParam) - 1;
         }
 
         var sessionFactory = HibernateUtil.getSessionFactory();
@@ -39,15 +39,23 @@ public class EndedMatchesServlet extends HttpServlet {
         EndedMatchService endedMatchService = new EndedMatchService(matchRepository);
 
         List<Match> matches = Collections.emptyList();
+        long amount;
 
-        if(name == null){
-            matches = endedMatchService.findAll();
+        if(name == null || name.isEmpty()){
+            matches = endedMatchService.findAll(page);
+            amount = endedMatchService.findAmountOfMatches();
         }
         else{
             matches = endedMatchService.findAll(page, name);
+            amount = endedMatchService.findAmountOfMatches(name);
         }
 
+        long pages = (long) Math.ceil((double) amount / 10);
+
+        req.setAttribute("name", name);
+        req.setAttribute("pages", pages);
         req.setAttribute("matches", matches);
+
         req.getRequestDispatcher("/WEB-INF/jsp/ended-matches.jsp").forward(req,resp);
     }
 }

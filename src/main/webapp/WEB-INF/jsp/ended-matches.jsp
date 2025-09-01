@@ -5,8 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-    <form method="get" action="matches?filter_by_player_name=${NAME}">
-        <input type="text">
+    <form method="get" action="/matches">
+        <input type="text" name="name">
         <input type="submit" >
     </form>
     <ul>
@@ -14,5 +14,8 @@
             <li>${match}</li>
         </c:forEach>
     </ul>
+    <c:forEach var="i" begin="1" end="${requestScope.pages}">
+        <a href="matches?page=${i}&name=${requestScope.name}">${i}</a>
+    </c:forEach>
 </body>
 </html>

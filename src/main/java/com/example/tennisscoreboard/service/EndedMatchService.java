@@ -19,8 +19,20 @@ public class EndedMatchService {
         return matchRepository.findAll(page, name);
     }
 
+    public List<Match> findAll(int page){
+        return matchRepository.findAll(page);
+    }
 
     public List<Match> findAll(){
         return matchRepository.findAll();
     }
+
+    public Long findAmountOfMatches(){
+        return matchRepository.findAmountOfMatches();
+    }
+
+    public Long findAmountOfMatches(String name){
+        return matchRepository.findAmountOfMatches(name);
+    }
+
 }
