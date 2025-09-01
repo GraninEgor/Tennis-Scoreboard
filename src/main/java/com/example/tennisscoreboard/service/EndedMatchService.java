@@ -15,6 +15,11 @@ public class EndedMatchService {
         matchRepository.save(match);
     }
 
+    public List<Match> findAll(int page, String name){
+        return matchRepository.findAll(page, name);
+    }
+
+
     public List<Match> findAll(){
         return matchRepository.findAll();
     }

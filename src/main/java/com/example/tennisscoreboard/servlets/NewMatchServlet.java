@@ -37,14 +37,10 @@ public class NewMatchServlet extends HttpServlet {
         String firstPlayerName = req.getParameter("firstPlayerName");
         String secondPlayerName = req.getParameter("secondPlayerName");
 
-        Player firstPlayer = new Player(firstPlayerName);
-        Player secondPlayer = new Player(secondPlayerName);
-
-
         session.beginTransaction();
 
-        playerService.createPlayer(firstPlayer);
-        playerService.createPlayer(secondPlayer);
+        Player firstPlayer = playerService.createPlayer(new Player(firstPlayerName));
+        Player secondPlayer = playerService.createPlayer(new Player(secondPlayerName));
 
         session.flush();
 

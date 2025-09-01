@@ -4,6 +4,7 @@ import com.example.tennisscoreboard.model.entity.BaseEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class BaseRepository<K extends Serializable, E extends BaseEntity<K>> implements Repository<K,E>{
 
     @Getter
-    private final EntityManager entityManager;
+    protected final EntityManager entityManager;
     private final Class<E> clazz;
 
     @Override

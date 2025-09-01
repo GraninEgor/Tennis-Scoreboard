@@ -11,8 +11,8 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    public void createPlayer(Player player){
-        playerRepository.save(player);
+    public Player createPlayer(Player player){
+        return playerRepository.save(player);
     }
 
     public Optional<Player> get(Long id){

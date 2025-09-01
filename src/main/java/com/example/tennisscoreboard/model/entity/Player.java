@@ -2,10 +2,9 @@ package com.example.tennisscoreboard.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.ManyToOne;
+
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -14,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Player extends BaseEntity<Long>{
     @Column(unique = true, nullable = false)
+    @NonNull
     private String name;
 }

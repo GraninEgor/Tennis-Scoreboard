@@ -67,8 +67,6 @@ public class CurrentMatchServlet extends HttpServlet {
 
             session.beginTransaction();
 
-            System.out.println(playerService.get(currentMatch.get().getFirstPlayer().getId()));
-
             endedMatchService.create(gameAndEntityMapper.toEntity(currentMatch.get()));
 
             session.getTransaction().commit();
